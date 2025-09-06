@@ -1,0 +1,86 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  role      String   // 'admin' | 'operator'
+  createdAt DateTime @default(now())
+
+  @@map("users")
+}
+
+model Lot {
+  id          String   @id @default(cuid())
+  title       String
+  category    String   // 'games' | 'movies'
+  description String?
+  imageUrl    String?
+  meta        String?  // JSON string
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  auctionLots AuctionLot[]
+
+  @@map("lots")
+}
+
+model Auction {
+  id          String    @id @default(cuid())
+  mode        String    // 'cards' | 'roulette'
+  durationSec Int
+  status      String    // 'idle' | 'configured' | 'running' | 'paused' | 'finished' | 'archived'
+  startedAt   DateTime?
+  finishedAt  DateTime?
+  createdAt   DateTime  @default(now())
+
+  lots    AuctionLot[]
+  history HistoryRecord[]
+
+  @@map("auctions")
+}
+
+model AuctionLot {
+  id        String   @id @default(cuid())
+  auctionId String
+  lotId     String
+  order     Int
+  addedAt   DateTime @default(now())
+
+  auction Auction @relation(fields: [auctionId], references: [id], onDelete: Cascade)
+  lot     Lot     @relation(fields: [lotId], references: [id], onDelete: Cascade)
+
+  @@unique([auctionId, lotId])
+  @@map("auction_lots")
+}
+
+model HistoryRecord {
+  id        String   @id @default(cuid())
+  auctionId String
+  eventType String
+  payload   String   // JSON string
+  createdAt DateTime @default(now())
+
+  auction Auction @relation(fields: [auctionId], references: [id], onDelete: Cascade)
+
+  @@map("history_records")
+}
+
+model Feedback {
+  id          String   @id @default(cuid())
+  theme       String
+  description String
+  email       String?
+  createdAt   DateTime @default(now())
+
+  @@map("feedback")
+}
