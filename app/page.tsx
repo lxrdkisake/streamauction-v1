@@ -1,200 +1,145 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Badge } from '@/components/ui/badge'
-import { Separator } from '@/components/ui/separator'
-import { Checkbox } from '@/components/ui/checkbox'
-import { AlertCircle, Play, Search, Plus, Trash2, Settings, RotateCcw } from 'lucide-react'
+import { useEffect } from 'react'
 import useAuctionStore from '@/store/auction'
 import { AuctionParamsPanel } from '@/components/auction/AuctionParamsPanel'
-import LibrarySection from '@/components/library/LibrarySection'
-import { LotsListSection } from '@/components/auction/LotsListSection'
-import type { Auction } from '@/lib/validators'
+import { LibraryGrid } from '@/components/library/LibraryGrid'
+import { SidebarList } from '@/components/auction/SidebarList'
+import { CardsMode } from '@/components/auction/CardsMode'
+import { RouletteMode } from '@/components/auction/RouletteMode'
+import { AddDonationModal } from '@/components/common/AddDonationModal'
+import { WinnerOverlay } from '@/components/common/WinnerOverlay'
+import { Button } from '@/components/ui/button'
+import { Play, Square } from 'lucide-react'
 
-export default function PreparationPage() {
-  const {
-    currentAuction,
-    config,
-    auctionLots,
-    isLoading,
-    error,
-    setCurrentAuction,
-    setConfig,
-    setError
+export default function HomePage() {
+  const { 
+    lots, 
+    mode, 
+    ui,
+    start,
+    stop,
+    resetAll
   } = useAuctionStore()
 
-  const [localError, setLocalError] = useState<string | null>(null)
+  const lotsList = Object.values(lots)
+  const isAuctionRunning = ui.winner !== null || ui.showWinner
+  const canStartAuction = lotsList.length > 0 && !isAuctionRunning
 
-  // Initialize current auction on page load
+  // Auto-restore timer state
   useEffect(() => {
-    const initializeAuction = async () => {
-      try {
-        // Check for existing active auction
-        const response = await fetch('/api/auctions?status=configured')
-        const result = await response.json()
+    const { timer, setTimer, startTimer } = useAuctionStore.getState()
+    
+    if (timer.running && timer.endsAt) {
+      const now = Date.now()
+      const leftMs = Math.max(0, timer.endsAt - now)
+      
+      if (leftMs > 0) {
+        const totalSeconds = Math.ceil(leftMs / 1000)
+        const hours = Math.floor(totalSeconds / 3600)
+        const minutes = Math.floor((totalSeconds % 3600) / 60)
+        const seconds = totalSeconds % 60
         
-        if (result.success && result.data.auctions.length > 0) {
-          setCurrentAuction(result.data.auctions[0])
-          return
-        }
-
-        // Check for idle auctions
-        const idleResponse = await fetch('/api/auctions?status=idle')
-        const idleResult = await idleResponse.json()
-        
-        if (idleResult.success && idleResult.data.auctions.length > 0) {
-          setCurrentAuction(idleResult.data.auctions[0])
-        }
-      } catch (error) {
-        console.error('Failed to initialize auction:', error)
-        setError('Не удалось загрузить аукцион')
+        setTimer(hours, minutes, seconds)
+        startTimer()
       }
     }
+  }, [])
 
-    initializeAuction()
-  }, [setCurrentAuction, setError])
+  // Auto-tick timer
+  useEffect(() => {
+    const { timer, tick } = useAuctionStore.getState()
+    
+    if (!timer.running) return
+    
+    const interval = setInterval(() => {
+      tick()
+    }, 100)
+    
+    return () => clearInterval(interval)
+  }, [])
 
-  const handleStartAuction = async () => {
-    if (!currentAuction) {
-      setLocalError('Аукцион не настроен')
-      return
-    }
-
-    if (auctionLots.length === 0) {
-      setLocalError('Добавьте лоты в список аукциона')
-      return
-    }
-
-    try {
-      const response = await fetch(`/api/auctions/${currentAuction.id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          status: 'running'
-        })
-      })
-
-      const result = await response.json()
-
-      if (result.success) {
-        setCurrentAuction(result.data)
-        // Redirect to auction page
-        window.location.href = '/auction'
-      } else {
-        setLocalError(result.error || 'Не удалось начать аукцион')
-      }
-    } catch (error) {
-      setLocalError('Ошибка при запуске аукциона')
+  const handleStartAuction = () => {
+    if (canStartAuction) {
+      start(mode)
     }
   }
 
-  const displayError = error || localError
+  const handleStopAuction = () => {
+    stop()
+  }
 
   return (
-    <div className="container-custom py-6">
-      <div className="sidebar-layout">
-        {/* Left Panel - Auction Parameters */}
-        <div className="space-y-6">
-          <AuctionParamsPanel />
-        </div>
-
-        {/* Main Content */}
-        <div className="space-y-6">
-          {/* Error Display */}
-          {displayError && (
-            <Card className="border-destructive/50 bg-destructive/10">
-              <CardContent className="flex items-center gap-2 pt-6">
-                <AlertCircle className="w-4 h-4 text-destructive" />
-                <span className="text-sm text-destructive">{displayError}</span>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => {
-                    setError(null)
-                    setLocalError(null)
-                  }}
-                  className="ml-auto"
-                >
-                  Закрыть
-                </Button>
-              </CardContent>
-            </Card>
-          )}
-
-          {/* Library Section */}
-          <LibrarySection />
-
-          {/* Lots List Section */}
-          <LotsListSection />
-
-          {/* Action Buttons */}
-          <div className="flex items-center justify-end gap-4">
-            <Button
-              variant="outline"
-              onClick={() => {
-                // Reset lots list
-                // This would typically call an API to clear the auction lots
-              }}
-              disabled={isLoading || auctionLots.length === 0}
-            >
-              <Trash2 className="w-4 h-4 mr-2" />
-              Очистить список
-            </Button>
-            
-            <Button
-              onClick={handleStartAuction}
-              disabled={isLoading || auctionLots.length === 0 || !currentAuction}
-              className="btn-standard"
-            >
-              <Play className="w-4 h-4 mr-2" />
-              Начать аукцион
-            </Button>
+    <div className="min-h-screen bg-background">
+      <div className="container-custom py-6">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-[calc(100vh-6rem)]">
+          {/* Left Sidebar - Timer & Settings */}
+          <div className="lg:col-span-3 space-y-6">
+            <AuctionParamsPanel />
           </div>
 
-          {/* Status Info */}
-          {currentAuction && (
-            <Card>
-              <CardContent className="pt-6">
-                <div className="flex items-center justify-between text-sm text-muted-foreground">
-                  <span>Статус аукциона:</span>
-                  <Badge variant={currentAuction.status === 'configured' ? 'default' : 'outline'}>
-                    {currentAuction.status === 'idle' && 'Готов к настройке'}
-                    {currentAuction.status === 'configured' && 'Настроен'}
-                    {currentAuction.status === 'running' && 'Идёт'}
-                    {currentAuction.status === 'paused' && 'Пауза'}
-                    {currentAuction.status === 'finished' && 'Завершён'}
-                    {currentAuction.status === 'archived' && 'Архивирован'}
-                  </Badge>
+          {/* Main Content */}
+          <div className="lg:col-span-6 space-y-6">
+            {!isAuctionRunning ? (
+              <>
+                {/* Library */}
+                <LibraryGrid />
+                
+                {/* Start Auction Button */}
+                <div className="flex items-center justify-center gap-4">
+                  <Button
+                    onClick={handleStartAuction}
+                    disabled={!canStartAuction}
+                    size="lg"
+                    className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70"
+                  >
+                    <Play className="w-5 h-5 mr-2" />
+                    Начать аукцион
+                  </Button>
+                  
+                  {lotsList.length > 0 && (
+                    <Button
+                      variant="outline"
+                      onClick={resetAll}
+                      size="lg"
+                    >
+                      Сбросить всё
+                    </Button>
+                  )}
                 </div>
-                <Separator className="my-3" />
-                <div className="grid grid-cols-3 gap-4 text-sm">
-                  <div>
-                    <span className="text-muted-foreground">Режим:</span>
-                    <div className="font-medium">
-                      {config?.mode === 'cards' ? 'Карточки' : 'Рулетка'}
-                    </div>
-                  </div>
-                  <div>
-                    <span className="text-muted-foreground">Длительность:</span>
-                    <div className="font-medium">{config?.durationSec || 0}с</div>
-                  </div>
-                  <div>
-                    <span className="text-muted-foreground">Лотов:</span>
-                    <div className="font-medium">{auctionLots.length}</div>
-                  </div>
+              </>
+            ) : (
+              <>
+                {/* Auction Mode Display */}
+                {mode === 'cards' ? <CardsMode /> : <RouletteMode />}
+                
+                {/* Stop Auction Button */}
+                <div className="flex items-center justify-center">
+                  <Button
+                    onClick={handleStopAuction}
+                    variant="destructive"
+                    size="lg"
+                  >
+                    <Square className="w-5 h-5 mr-2" />
+                    Остановить аукцион
+                  </Button>
                 </div>
-              </CardContent>
-            </Card>
-          )}
+              </>
+            )}
+          </div>
+
+          {/* Right Sidebar - Lots List */}
+          <div className="lg:col-span-3">
+            <div className="sticky top-6 h-[calc(100vh-6rem)]">
+              <SidebarList />
+            </div>
+          </div>
         </div>
       </div>
+
+      {/* Modals */}
+      <AddDonationModal />
+      <WinnerOverlay />
     </div>
   )
 }
