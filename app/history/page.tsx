@@ -15,7 +15,7 @@ import {
   Square,
   Archive,
   RotateCcw,
-  TowerControl as GameController2,
+  Gamepad2,
   Film,
   Loader2
 } from 'lucide-react'
@@ -268,7 +268,7 @@ export default function HistoryPage() {
             <CardContent className="p-6">
               <div className="flex items-center gap-4">
                 <div className="p-3 bg-blue-500/10 rounded-lg">
-                  <TowerControl as GameController2 className="w-6 h-6 text-blue-500" />
+                  <Gamepad2 className="w-6 h-6 text-blue-500" />
                 </div>
                 <div>
                   <div className="text-2xl font-bold">{stats.byMode.cards || 0}</div>
