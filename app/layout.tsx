@@ -1,13 +1,6 @@
 import './globals.css';
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
 import { AppHeader } from '@/components/layout/AppHeader';
-
-const inter = Inter({ 
-  subsets: ['latin', 'cyrillic'],
-  display: 'swap',
-  variable: '--font-inter'
-});
 
 export const metadata: Metadata = {
   title: 'StreamAuction 2.0 - Интерактивные аукционы контента',
@@ -26,7 +19,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ru" className="dark">
-      <body className={`${inter.variable} font-sans antialiased`}>
+      <head>
+        <link
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap"
+          rel="stylesheet"
+        />
+      </head>
+      <body className="font-sans antialiased" style={{ fontFamily: 'Inter, sans-serif' }}>
         <div className="min-h-screen bg-background">
           <AppHeader />
           <main className="flex-1">
