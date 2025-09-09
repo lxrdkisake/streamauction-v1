@@ -12,11 +12,7 @@ export const metadata: Metadata = {
   themeColor: '#8A2BE2',
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ru" className="dark">
       <head>
@@ -25,7 +21,7 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="font-sans antialiased" style={{ fontFamily: 'Inter, sans-serif' }}>
+      <body className="min-h-dvh font-sans antialiased" style={{ fontFamily: 'Inter, sans-serif' }}>
         <div className="min-h-screen bg-background">
           <AppHeader />
           <main className="flex-1">

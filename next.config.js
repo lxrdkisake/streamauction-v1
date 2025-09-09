@@ -6,9 +6,9 @@ const nextConfig = {
     remotePatterns: [
       { protocol: 'https', hostname: 'image.tmdb.org' },
       { protocol: 'https', hostname: 'media.rawg.io' },
+      { protocol: 'https', hostname: 'rawg.io' },
     ],
-    unoptimized: false,
   },
-  eslint: { ignoreDuringBuilds: true },
+  // Никакого output:'export'
 }
 module.exports = nextConfig
