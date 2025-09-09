@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect } from 'react'
 import { AuctionControlPanel } from '@/components/auction/AuctionControlPanel'
 import { LotsListSection } from '@/components/auction/LotsListSection'
 import LibrarySection from '@/components/library/LibrarySection'
@@ -9,7 +10,11 @@ import { WinnerOverlay } from '@/components/common/WinnerOverlay'
 import useAuctionStore from '@/store/auction'
 
 export default function AuctionPage() {
-  const { currentAuction } = useAuctionStore()
+  const { currentAuction, fetchCurrentAuction } = useAuctionStore()
+  
+  useEffect(() => {
+    fetchCurrentAuction()
+  }, [fetchCurrentAuction])
   
   const isAuctionRunning = currentAuction?.status === 'running'
   const auctionMode = currentAuction?.mode || 'cards'

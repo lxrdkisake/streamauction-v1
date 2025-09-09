@@ -13,12 +13,13 @@ import {
   MessageSquare,
   Timer
 } from 'lucide-react'
-import useAuctionStore from '@/store/auction'
+import useAuctionStore, { useTimerState } from '@/store/auction'
 import { getStatusLabel, getStatusVariant } from '@/lib/fsm/auction'
 
 export function AppHeader() {
   const pathname = usePathname()
-  const { currentAuction, timeLeft, timerActive } = useAuctionStore()
+  const { currentAuction } = useAuctionStore()
+  const { timeLeft, timerActive } = useTimerState()
   
   const navigation = [
     {

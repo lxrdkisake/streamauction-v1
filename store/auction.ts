@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
+import React from 'react'
 
 export type LotId = string
 
@@ -8,8 +9,28 @@ export type Lot = {
   title: string
   imageUrl: string | null
   category: 'games' | 'movies'
+  description?: string
   sum: number
   eliminated: boolean
+}
+
+export type AuctionLot = {
+  id: string
+  auctionId: string
+  lotId: string
+  order: number
+  lot: Lot
+}
+
+export type Auction = {
+  id: string
+  status: string
+  mode: 'cards' | 'roulette'
+  durationSec: number
+  lots?: AuctionLot[]
+  history?: any[]
+  createdAt: string
+  updatedAt: string
 }
 
 export type Mode = 'cards' | 'roulette'
@@ -44,6 +65,11 @@ export type AuctionState = {
   ui: UIState
   searchQuery: string
   
+  // New auction management
+  currentAuction: Auction | null
+  auctionLots: AuctionLot[]
+  isUpdating: boolean
+  
   // Actions
   addOrIncrease: (lot: Omit<Lot, 'sum' | 'eliminated'>, delta: number) => void
   editSum: (id: LotId, sum: number) => void
@@ -75,6 +101,14 @@ export type AuctionState = {
   setWinner: (id: LotId | null) => void
   setAddingLot: (lot: Lot | null) => void
   showWinnerScreen: (show: boolean) => void
+  
+  // New auction management actions
+  fetchCurrentAuction: () => Promise<void>
+  createAuction: (config: { mode: 'cards' | 'roulette'; durationSec: number }) => Promise<void>
+  updateAuctionStatus: (auctionId: string, status: string) => Promise<void>
+  addLotToAuction: (auctionLot: AuctionLot) => void
+  removeLotFromAuction: (lotId: string) => void
+  setAuctionLots: (lots: AuctionLot[]) => void
   
   // Reset
   resetAll: () => void
@@ -141,6 +175,11 @@ const useAuctionStore = create<AuctionState>()(
         showWinner: false
       },
       searchQuery: '',
+      
+      // New auction management state
+      currentAuction: null,
+      auctionLots: [],
+      isUpdating: false,
 
       addOrIncrease: (lotData, delta) => {
         set((state) => {
@@ -419,6 +458,111 @@ const useAuctionStore = create<AuctionState>()(
         }))
       },
 
+      // New auction management actions
+      fetchCurrentAuction: async () => {
+        set({ isUpdating: true })
+        try {
+          const response = await fetch('/api/auctions/current')
+          const result = await response.json()
+          
+          if (result.success && result.data) {
+            set({ 
+              currentAuction: result.data.auction,
+              auctionLots: result.data.lots || []
+            })
+          } else {
+            set({ 
+              currentAuction: null,
+              auctionLots: []
+            })
+          }
+        } catch (error) {
+          console.error('Failed to fetch current auction:', error)
+          set({ 
+            currentAuction: null,
+            auctionLots: []
+          })
+        } finally {
+          set({ isUpdating: false })
+        }
+      },
+
+      createAuction: async (config) => {
+        set({ isUpdating: true })
+        try {
+          const response = await fetch('/api/auctions', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(config)
+          })
+          
+          const result = await response.json()
+          
+          if (result.success) {
+            set({ 
+              currentAuction: result.data,
+              auctionLots: []
+            })
+          } else {
+            throw new Error(result.error || 'Failed to create auction')
+          }
+        } catch (error) {
+          console.error('Failed to create auction:', error)
+          throw error
+        } finally {
+          set({ isUpdating: false })
+        }
+      },
+
+      updateAuctionStatus: async (auctionId, status) => {
+        set({ isUpdating: true })
+        try {
+          const response = await fetch(`/api/auctions/${auctionId}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ status })
+          })
+          
+          const result = await response.json()
+          
+          if (result.success) {
+            set((state) => ({
+              currentAuction: state.currentAuction ? {
+                ...state.currentAuction,
+                status
+              } : null
+            }))
+          } else {
+            throw new Error(result.error || 'Failed to update auction status')
+          }
+        } catch (error) {
+          console.error('Failed to update auction status:', error)
+          throw error
+        } finally {
+          set({ isUpdating: false })
+        }
+      },
+
+      addLotToAuction: (auctionLot) => {
+        set((state) => ({
+          auctionLots: [...state.auctionLots, auctionLot]
+        }))
+      },
+
+      removeLotFromAuction: (lotId) => {
+        set((state) => ({
+          auctionLots: state.auctionLots.filter(al => al.lotId !== lotId)
+        }))
+      },
+
+      setAuctionLots: (lots) => {
+        set({ auctionLots: lots })
+      },
+
       resetAll: () => {
         set({
           lots: {},
@@ -441,7 +585,10 @@ const useAuctionStore = create<AuctionState>()(
             addingLot: null,
             showWinner: false
           },
-          searchQuery: ''
+          searchQuery: '',
+          currentAuction: null,
+          auctionLots: [],
+          isUpdating: false
         })
       }
     }),
@@ -460,6 +607,16 @@ const useAuctionStore = create<AuctionState>()(
 )
 
 export default useAuctionStore
+
+// Computed properties for timer
+export const useTimerState = () => {
+  const timer = useAuctionStore(state => state.timer)
+  
+  return {
+    timeLeft: Math.ceil(timer.leftMs / 1000),
+    timerActive: timer.running
+  }
+}
 
 // Timer hook with auto-restore
 export function useTimerRestore() {
