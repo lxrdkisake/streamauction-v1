@@ -117,8 +117,8 @@ export function RouletteMode() {
             min="1"
             max="30"
             value={spinDuration}
-            onChange={(e) => setSpinDurationLocal(parseInt(e.target.value) || 5)}
-            onBlur={handleDurationChange}
+          <h2 className="text-2xl font-bold mb-2 text-white">Режим рулетки</h2>
+          <p className="text-gray-300">
             className="w-20 text-center"
             disabled={isSpinning}
           />
@@ -129,18 +129,19 @@ export function RouletteMode() {
           disabled={isSpinning || availableLots.length === 0}
           size="lg"
         >
-          <Play className="w-4 h-4 mr-2" />
-          {isSpinning ? 'Крутится...' : 'Крутить'}
+            <Label htmlFor="spin-duration" className="text-white">Длительность (сек):</Label>
+          <h3 className="text-lg font-semibold text-center text-white">Участвующие лоты</h3>
         </Button>
       </div>
 
       {/* Roulette */}
       <div className="relative">
         {/* Roulette Container */}
-        <div className="relative h-32 bg-gradient-to-r from-background via-muted/20 to-background rounded-lg overflow-hidden border">
-          {/* Center Marker */}
-          <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-1 h-full bg-primary z-10">
-            <div className="absolute top-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-b-8 border-l-transparent border-r-transparent border-b-primary" />
+          <div className="relative h-32 bg-gradient-to-r from-gray-800/50 via-gray-700/50 to-gray-800/50 rounded-lg overflow-hidden border border-gray-600">
+              className="w-20 text-center bg-gray-800 border-gray-600 text-white"
+            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-1 h-full bg-purple-500 z-10">
+              <div className="absolute top-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-b-8 border-l-transparent border-r-transparent border-b-purple-500" />
+                    "bg-gray-800 border-gray-600",
           </div>
           
           {/* Roulette Items */}
@@ -148,18 +149,19 @@ export function RouletteMode() {
             ref={rouletteRef}
             className="flex h-full items-center"
             style={{ width: `${rouletteItems.length * 120}px` }}
+            className="bg-purple-600 hover:bg-purple-700"
           >
             {rouletteItems.map((lot, index) => (
               <div
-                key={`${lot.id}-${index}`}
-                className="w-28 h-28 m-1 flex-shrink-0 rounded-lg overflow-hidden border bg-card"
-              >
+                  className="w-28 h-28 m-1 flex-shrink-0 rounded-lg overflow-hidden border border-gray-600 bg-gray-800"
+                      <h4 className="font-medium text-sm line-clamp-2 text-white">{lot.title}</h4>
+                      <div className="text-xs text-green-400 font-bold">
                 <img
                   src={getImageUrl(lot.imageUrl)}
-                  alt={lot.title}
+                      <div className="text-xs text-gray-400">
                   className="w-full h-20 object-cover"
                 />
-                <div className="p-1 text-center">
+                    <div className="text-xs font-medium truncate text-white">{lot.title}</div>
                   <div className="text-xs font-medium truncate">{lot.title}</div>
                 </div>
               </div>

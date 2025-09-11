@@ -3,27 +3,27 @@
 @tailwind utilities;
 
 :root{
-  --background: 222.2 84% 4.9%;
+  --background: 220 26% 14%;
   --foreground: 210 40% 98%;
-  --card: 222.2 84% 4.9%;
+  --card: 220 26% 18%;
   --card-foreground: 210 40% 98%;
   --primary: 269 83% 53%;              /* фиолетовый акцент */
   --primary-foreground: 210 40% 98%;
-  --secondary: 217.2 32.6% 17.5%;
+  --secondary: 220 26% 22%;
   --secondary-foreground: 210 40% 98%;
-  --muted: 217.2 32.6% 17.5%;
+  --muted: 220 26% 25%;
   --muted-foreground: 215 20.2% 65.1%;
-  --accent: 217.2 32.6% 17.5%;
+  --accent: 220 26% 22%;
   --accent-foreground: 210 40% 98%;
-  --border: 217.2 32.6% 17.5%;
-  --input: 217.2 32.6% 17.5%;
+  --border: 220 26% 30%;
+  --input: 220 26% 18%;
   --ring: 269 83% 53%;
   --radius: 0.75rem;
   /* доп. токены для фона и панелей */
-  --background-base:#0E0E10;
-  --surface-1:#141419;
-  --surface-2:#1A1A20;
-  --border-color:#2A2D36;
+  --background-base: #1a1a2e;
+  --surface-1: #16213e;
+  --surface-2: #0f3460;
+  --border-color: #533483;
   --text-primary:#F5F6F8;
   --text-muted:#B1B4BD;
 }
@@ -36,14 +36,10 @@
   body{
     @apply bg-background text-foreground font-sans;
     color:var(--text-primary);
-    /* фон: тёмная база + точки + лёгкая виньетка */
+    /* фон: градиент как на скриншоте */
     background-color:var(--background-base);
-    background-image:
-      radial-gradient(circle at 1px 1px, rgba(255,255,255,.06) 1px, transparent 1px),
-      radial-gradient(1200px 600px at 50% -200px, rgba(255,255,255,.06), transparent 70%);
-    background-size:16px 16px, auto;
-    background-attachment:fixed, fixed;
-    background-repeat:repeat, no-repeat;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 25%, #0f3460 50%, #533483 75%, #1a1a2e 100%);
+    background-attachment: fixed;
   }
 
   ::-webkit-scrollbar{ width:8px; height:8px; }
@@ -53,8 +49,18 @@
 }
 
 @layer components{
-  .card-like{ background:var(--surface-1); border:1px solid var(--border-color); border-radius:12px; }
-  .input-like{ background:var(--surface-2); border:1px solid var(--border-color); color:var(--text-primary); }
+  .card-like{ 
+    background: rgba(22, 33, 62, 0.8); 
+    border: 1px solid rgba(83, 52, 131, 0.5); 
+    border-radius: 12px; 
+    backdrop-filter: blur(10px);
+  }
+  .input-like{ 
+    background: rgba(15, 52, 96, 0.8); 
+    border: 1px solid rgba(83, 52, 131, 0.5); 
+    color: var(--text-primary); 
+    backdrop-filter: blur(10px);
+  }
   .container-custom{ max-width:1400px; margin:0 auto; padding:0 1rem; }
   .empty-state{ display:flex; flex-direction:column; align-items:center; justify-content:center; padding:3rem 1rem; text-align:center; }
   .empty-state-icon{ width:4rem; height:4rem; color:hsl(var(--muted-foreground)); margin-bottom:1rem; }
@@ -66,14 +72,85 @@
   .timer-display{ font-family:ui-monospace, "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace; }
 }
 
-/* дизайн карточек «неоновый вопрос» */
-.card{ width:160px; height:225px; position:relative; }
-.card-inner{ width:100%; height:100%; transform-style:preserve-3d; transition:transform .5s cubic-bezier(.22,1,.36,1); }
-.card.flipped .card-inner{ transform:rotateY(180deg); }
-.card-face{ position:absolute; inset:0; border-radius:12px; overflow:hidden; backface-visibility:hidden; }
-.card-back{ background:linear-gradient(135deg,#2a2a2e,#1F1F23); border:1px solid #3A3A3D; display:grid; place-items:center; font-size:4rem; font-weight:700; color:#9146FF; text-shadow:0 0 15px rgba(145,70,255,.5); }
-.card-front{ transform:rotateY(180deg); background-size:cover; background-position:center; display:flex; align-items:flex-end; }
-.card-front::after{ content:""; position:absolute; left:0; right:0; bottom:0; height:70%; background:linear-gradient(to top,rgba(0,0,0,.9) 20%, transparent 100%); }
-.card-info{ position:relative; z-index:1; padding:12px; }
-.card-title{ font-weight:700; color:#fff; text-shadow:0 1px 4px #000; }
-.card-sum{ font-weight:800; color:#00DB84; margin-top:4px; }
+/* Обновленный дизайн карточек в стиле скриншота */
+.card-container { 
+  width: 160px; 
+  height: 225px; 
+  position: relative; 
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.card-container:hover {
+  transform: scale(1.05);
+}
+
+.card-inner { 
+  width: 100%; 
+  height: 100%; 
+  transform-style: preserve-3d; 
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1); 
+}
+
+.card-container.flipped .card-inner { 
+  transform: rotateY(180deg); 
+}
+
+.card-face { 
+  position: absolute; 
+  inset: 0; 
+  border-radius: 12px; 
+  overflow: hidden; 
+  backface-visibility: hidden; 
+  border: 1px solid rgba(83, 52, 131, 0.5);
+}
+
+.card-back { 
+  background: linear-gradient(135deg, rgba(22, 33, 62, 0.9), rgba(15, 52, 96, 0.9)); 
+  display: grid; 
+  place-items: center; 
+  font-size: 4rem; 
+  font-weight: 700; 
+  color: #9146FF; 
+  text-shadow: 0 0 20px rgba(145, 70, 255, 0.8);
+  backdrop-filter: blur(10px);
+}
+
+.card-front { 
+  transform: rotateY(180deg); 
+  background-size: cover; 
+  background-position: center; 
+  display: flex; 
+  align-items: flex-end; 
+}
+
+.card-front::after { 
+  content: ""; 
+  position: absolute; 
+  left: 0; 
+  right: 0; 
+  bottom: 0; 
+  height: 70%; 
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 20%, transparent 100%); 
+}
+
+.card-info { 
+  position: relative; 
+  z-index: 2; 
+  padding: 12px; 
+}
+
+.card-title { 
+  font-weight: 700; 
+  color: #fff; 
+  text-shadow: 0 1px 4px #000; 
+  font-size: 0.875rem;
+  line-height: 1.2;
+  margin-bottom: 4px;
+}
+
+.card-sum { 
+  font-weight: 800; 
+  color: #00DB84; 
+  font-size: 0.875rem;
+}

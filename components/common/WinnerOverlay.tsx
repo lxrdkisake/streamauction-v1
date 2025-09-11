@@ -23,7 +23,7 @@ export function WinnerOverlay() {
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-2xl border-0 bg-gradient-to-br from-primary/20 via-background to-primary/10 backdrop-blur-sm">
+      <DialogContent className="sm:max-w-2xl border-0 bg-gradient-to-br from-purple-900/80 via-gray-900/90 to-purple-900/80 backdrop-blur-sm">
         <div className="text-center space-y-6 py-8">
           {/* Trophy Icon */}
           <div className="flex justify-center">
@@ -39,7 +39,7 @@ export function WinnerOverlay() {
             <h1 className="text-4xl font-bold bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 bg-clip-text text-transparent mb-2">
               🎉 ПОБЕДИТЕЛЬ! 🎉
             </h1>
-            <p className="text-muted-foreground">
+            <p className="text-gray-300">
               Поздравляем с выигрышем!
             </p>
           </div>
@@ -48,7 +48,7 @@ export function WinnerOverlay() {
           <div className="flex justify-center">
             <div className="relative group">
               <div className="absolute -inset-1 bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 rounded-2xl blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-pulse"></div>
-              <div className="relative bg-card rounded-xl p-6 max-w-sm">
+              <div className="relative bg-gray-800 rounded-xl p-6 max-w-sm border border-gray-600">
                 <div className="aspect-[3/4] rounded-lg overflow-hidden mb-4">
                   <img
                     src={getImageUrl(winner.imageUrl)}
@@ -58,17 +58,17 @@ export function WinnerOverlay() {
                 </div>
                 
                 <div className="space-y-2">
-                  <h2 className="text-xl font-bold line-clamp-2">
+                  <h2 className="text-xl font-bold line-clamp-2 text-white">
                     {winner.title}
                   </h2>
                   
                   <div className="flex items-center justify-center gap-2">
-                    <span className="text-2xl font-bold text-primary">
+                    <span className="text-2xl font-bold text-green-400">
                       {winner.sum.toLocaleString()} ₽
                     </span>
                   </div>
                   
-                  <div className="text-sm text-muted-foreground">
+                  <div className="text-sm text-gray-400">
                     {winner.category === 'games' ? 'Игра' : 'Фильм/сериал'}
                   </div>
                 </div>

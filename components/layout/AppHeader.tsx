@@ -55,17 +55,17 @@ export function AppHeader() {
   }
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 border-b border-gray-600 bg-gray-900/95 backdrop-blur supports-[backdrop-filter]:bg-gray-900/80">
       <div className="container-custom">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <div className="flex items-center">
             <Link 
               href="/" 
-              className="flex items-center space-x-2 font-bold text-xl hover:text-primary transition-colors"
+              className="flex items-center space-x-2 font-bold text-xl text-white hover:text-purple-400 transition-colors"
             >
-              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                <Zap className="w-5 h-5 text-primary-foreground" />
+              <div className="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center">
+                <Zap className="w-5 h-5 text-white" />
               </div>
               <span>StreamAuction</span>
             </Link>
@@ -82,7 +82,8 @@ export function AppHeader() {
                     size="sm"
                     className={cn(
                       "tab-standard",
-                      item.current && "bg-primary text-primary-foreground"
+                      item.current && "bg-purple-600 text-white",
+                      !item.current && "text-gray-300 hover:text-white hover:bg-gray-800"
                     )}
                   >
                     <Icon className="w-4 h-4 mr-2" />
@@ -97,7 +98,7 @@ export function AppHeader() {
           <div className="flex items-center space-x-4">
             {/* Mini Timer */}
             {timerActive && timeLeft > 0 && (
-              <div className="flex items-center space-x-2 text-sm text-muted-foreground">
+              <div className="flex items-center space-x-2 text-sm text-gray-300">
                 <Timer className="w-4 h-4" />
                 <span className="timer-display font-mono">
                   {formatTime(timeLeft)}
@@ -122,7 +123,8 @@ export function AppHeader() {
                 size="sm"
                 className={cn(
                   "tab-standard",
-                  pathname === '/feedback' && "bg-primary text-primary-foreground"
+                  pathname === '/feedback' && "bg-purple-600 text-white",
+                  pathname !== '/feedback' && "text-gray-300 hover:text-white hover:bg-gray-800"
                 )}
               >
                 <MessageSquare className="w-4 h-4" />

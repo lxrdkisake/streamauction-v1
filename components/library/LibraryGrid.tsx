@@ -140,8 +140,8 @@ export function LibraryGrid() {
         {!isLoading && !error && items.length === 0 && search.trim() && (
           <div className="empty-state">
             <CategoryIcon className="empty-state-icon" />
-            <h3 className="empty-state-title">Ничего не найдено</h3>
-            <p className="empty-state-description">
+            <h3 className="empty-state-title text-white">Ничего не найдено</h3>
+            <p className="empty-state-description text-gray-300">
               Попробуйте изменить поисковый запрос
             </p>
           </div>
@@ -150,8 +150,8 @@ export function LibraryGrid() {
         {!search.trim() && !isLoading && (
           <div className="empty-state">
             <Search className="empty-state-icon" />
-            <h3 className="empty-state-title">Начните поиск</h3>
-            <p className="empty-state-description">
+            <h3 className="empty-state-title text-white">Начните поиск</h3>
+            <p className="empty-state-description text-gray-300">
               Введите название для поиска в библиотеке
             </p>
           </div>
@@ -166,7 +166,7 @@ export function LibraryGrid() {
                 className="group cursor-pointer"
                 onClick={() => handleItemClick(item)}
               >
-                <div className="aspect-[3/4] relative overflow-hidden rounded-lg border bg-muted transition-all group-hover:scale-105 group-hover:shadow-lg">
+                <div className="aspect-[3/4] relative overflow-hidden rounded-lg border border-gray-600 bg-gray-800 transition-all group-hover:scale-105 group-hover:shadow-lg">
                   <img
                     src={getImageUrl(item.imageUrl)}
                     alt={item.title}

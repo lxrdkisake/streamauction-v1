@@ -27,18 +27,18 @@
   border-radius: 12px;
   overflow: hidden;
   backface-visibility: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(83, 52, 131, 0.5);
 }
 
 .cardFaceBack {
-  background: linear-gradient(135deg, #2a2a2e, #1F1F23);
-  border: 1px solid #3A3A3D;
+  background: linear-gradient(135deg, rgba(22, 33, 62, 0.9), rgba(15, 52, 96, 0.9));
   display: grid;
   place-items: center;
   font-size: 4rem;
   font-weight: 700;
   color: #9146FF;
-  text-shadow: 0 0 15px rgba(145, 70, 255, 0.5);
+  text-shadow: 0 0 20px rgba(145, 70, 255, 0.8);
+  backdrop-filter: blur(10px);
 }
 
 .cardFaceFront {

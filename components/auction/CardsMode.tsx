@@ -60,8 +60,8 @@ export function CardsMode() {
     <div className="space-y-6">
       {/* Mode Info */}
       <div className="text-center">
-        <h2 className="text-2xl font-bold mb-2">Режим карточек</h2>
-        <p className="text-muted-foreground">
+        <h2 className="text-2xl font-bold mb-2 text-white">Режим карточек</h2>
+        <p className="text-gray-300">
           {subMode === 'instant' 
             ? 'Первая открытая карточка — победитель' 
             : 'Открывайте карточки до последнего оставшегося'
@@ -70,49 +70,51 @@ export function CardsMode() {
       </div>
 
       {/* Cards Grid */}
-      <div className="grid grid-cols-5 md:grid-cols-6 lg:grid-cols-7 gap-4 justify-items-center">
-        {availableLots.map((lot) => {
-          const isFlipped = flippedCards.has(lot.id)
-          const isEliminated = lot.eliminated
+      <div className="flex justify-center">
+        <div className="grid grid-cols-5 gap-4">
+          {availableLots.map((lot) => {
+            const isFlipped = flippedCards.has(lot.id)
+            const isEliminated = lot.eliminated
 
-          return (
-            <div
-              key={lot.id}
-              className={cn(
-                styles.cardContainer,
-                isFlipped && styles.flipped,
-                isEliminated && 'opacity-50'
-              )}
-              onClick={() => !isEliminated && handleCardClick(lot.id)}
-            >
-              <div className={styles.cardInner}>
-                {/* Back Face */}
-                <div className={cn(styles.cardFace, styles.cardFaceBack)}>
-                  ?
-                </div>
-                
-                {/* Front Face */}
-                <div 
-                  className={cn(styles.cardFace, styles.cardFaceFront)}
-                  style={{
-                    backgroundImage: `url(${getImageUrl(lot.imageUrl)})`
-                  }}
-                >
-                  <div className={styles.cardInfo}>
-                    <div className={styles.cardTitle}>{lot.title}</div>
-                    <div className={styles.cardDonation}>
-                      {lot.sum.toLocaleString()} ₽
+            return (
+              <div
+                key={lot.id}
+                className={cn(
+                  "card-container",
+                  isFlipped && styles.flipped,
+                  isEliminated && 'opacity-50'
+                )}
+                onClick={() => !isEliminated && handleCardClick(lot.id)}
+              >
+                <div className="card-inner">
+                  {/* Back Face */}
+                  <div className="card-face card-back">
+                    ?
+                  </div>
+                  
+                  {/* Front Face */}
+                  <div 
+                    className="card-face card-front"
+                    style={{
+                      backgroundImage: `url(${getImageUrl(lot.imageUrl)})`
+                    }}
+                  >
+                    <div className="card-info">
+                      <div className="card-title">{lot.title}</div>
+                      <div className="card-sum">
+                        {lot.sum.toLocaleString()} ₽
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-          )
-        })}
+            )
+          })}
+        </div>
       </div>
 
       {/* Stats */}
-      <div className="text-center text-sm text-muted-foreground">
+      <div className="text-center text-sm text-gray-300">
         Открыто: {flippedCards.size} из {availableLots.length} карточек
       </div>
     </div>
