@@ -1,35 +1,41 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { motion } from 'framer-motion'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Play, RotateCcw } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import useAuctionStore from '@/store/auction'
+import { Play, RotateCcw } from 'lucide-react'
+function getImageUrl(imageUrl: string | null): string {
+  return imageUrl || '/placeholder.png'
+}
 
 export function RouletteMode() {
   const { lots, timer, ui, selectWinner } = useAuctionStore()
   const [rotation, setRotation] = useState(0)
+  const { lots, timer, ui, setWinner, showWinnerScreen } = useAuctionStore()
+  const [rotation, setRotation] = useState(0)
   const [isSpinning, setIsSpinning] = useState(false)
 
-  const lotsList = Object.values(lots)
-
+  const lotsList = Object.values(lots).filter(lot => !lot.eliminated)
   const spinRoulette = () => {
     if (lotsList.length === 0 || isSpinning) return
 
     setIsSpinning(true)
     const spins = 5 + Math.random() * 5 // 5-10 full rotations
     const finalRotation = rotation + spins * 360 + Math.random() * 360
-    
+
+      const normalizedRotation = finalRotation % 360
+      const segmentSize = 360 / lotsList.length
     setRotation(finalRotation)
 
     // Calculate winner after animation
     setTimeout(() => {
       const normalizedRotation = finalRotation % 360
       const segmentSize = 360 / lotsList.length
-      const winnerIndex = Math.floor((360 - normalizedRotation) / segmentSize) % lotsList.length
-      const winningLot = lotsList[winnerIndex]
-      
-      selectWinner(winningLot.id)
+      setWinner(winningLot.id)
+      showWinnerScreen(true)
       setIsSpinning(false)
     }, 3000)
   }
@@ -38,10 +44,10 @@ export function RouletteMode() {
     setRotation(0)
     setIsSpinning(false)
   }
-
-  if (lotsList.length === 0) {
+        <div className="empty-state-icon">🎰</div>
+        <h3 className="empty-state-title">Нет лотов для рулетки</h3>
     return (
-      <div className="flex items-center justify-center h-96 text-gray-400">
+          Добавьте лоты для запуска рулетки
         <p>Добавьте лоты для запуска рулетки</p>
       </div>
     )
@@ -49,17 +55,20 @@ export function RouletteMode() {
 
   const segmentAngle = 360 / lotsList.length
 
+  const segmentAngle = 360 / lotsList.length
+
   return (
     <div className="flex flex-col items-center space-y-6">
       {/* Timer Display */}
       <div className="text-center mb-4">
-        <div className="text-4xl font-mono text-white mb-2">
-          {String(timer.hours).padStart(2, '0')}:
-          {String(timer.minutes).padStart(2, '0')}:
-          {String(timer.seconds).padStart(2, '0')}
+        <div className="timer-display text-white mb-2">
+          {Math.floor(timer.leftMs / 3600000).toString().padStart(2, '0')}:
+          {Math.floor((timer.leftMs % 3600000) / 60000).toString().padStart(2, '0')}:
+          {Math.floor((timer.leftMs % 60000) / 1000).toString().padStart(2, '0')}
         </div>
         <div className="text-purple-300">
-          Осталось карт: {lotsList.length}. Нажмите «Продолжить».
+          Осталось лотов: {lotsList.length}. Нажмите «Крутить».
+        </div>
         </div>
       </div>
 
@@ -71,6 +80,9 @@ export function RouletteMode() {
             <div className="w-0 h-0 border-l-4 border-r-4 border-b-8 border-l-transparent border-r-transparent border-b-purple-400"></div>
           </div>
 
+          {/* Wheel */}
+          <motion.div
+            className="w-full h-full rounded-full border-4 border-purple-400/50 relative overflow-hidden"
           {/* Wheel */}
           <motion.div
             className="w-full h-full rounded-full border-4 border-purple-400/50 relative overflow-hidden"
@@ -101,7 +113,7 @@ export function RouletteMode() {
                     style={{ transform: `rotate(${segmentAngle / 2}deg)` }}
                   >
                     <div className="truncate max-w-16">{lot.title}</div>
-                    <div className="text-xs opacity-75">{lot.price}₽</div>
+                    <div className="text-xs opacity-75">{lot.sum}₽</div>
                   </div>
                 </div>
               )
@@ -113,6 +125,22 @@ export function RouletteMode() {
       {/* Controls */}
       <div className="flex space-x-4">
         <Button
+          onClick={spinRoulette}
+          disabled={isSpinning}
+          className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2"
+        >
+          <Play className="w-4 h-4 mr-2" />
+          {isSpinning ? 'Крутится...' : 'Крутить'}
+        </Button>
+        
+        <Button
+          onClick={resetRoulette}
+          variant="outline"
+          className="border-purple-400/50 text-purple-300 hover:bg-purple-500/10"
+        >
+          <RotateCcw className="w-4 h-4 mr-2" />
+          Сброс
+        </Button>
           onClick={spinRoulette}
           disabled={isSpinning}
           className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2"

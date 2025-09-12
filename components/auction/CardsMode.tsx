@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
 import useAuctionStore from '@/store/auction'
-import styles from './cards.module.css'
 
 function getImageUrl(imageUrl: string | null): string {
   return imageUrl || '/placeholder.png'
@@ -80,15 +79,15 @@ export function CardsMode() {
               <div
                 key={lot.id}
                 className={cn(
-                  "card-container",
-                  isFlipped && styles.flipped,
+                  "card-container clickable",
+                  isFlipped && "flipped",
                   isEliminated && 'opacity-50'
                 )}
                 onClick={() => !isEliminated && handleCardClick(lot.id)}
               >
                 <div className="card-inner">
                   {/* Back Face */}
-                  <div className="card-face card-back">
+                  <div className="card-face card-back clickable">
                     ?
                   </div>
                   
@@ -101,7 +100,7 @@ export function CardsMode() {
                   >
                     <div className="card-info">
                       <div className="card-title">{lot.title}</div>
-                      <div className="card-sum">
+                      <div className="card-donation">
                         {lot.sum.toLocaleString()} ₽
                       </div>
                     </div>

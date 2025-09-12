@@ -23,7 +23,7 @@ export function WinnerOverlay() {
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-2xl border-0 bg-gradient-to-br from-purple-900/80 via-gray-900/90 to-purple-900/80 backdrop-blur-sm">
+      <DialogContent className="sm:max-w-2xl border-0 bg-gradient-to-br from-purple-900/80 via-gray-900/90 to-purple-900/80 backdrop-blur-sm winner-display-container">
         <div className="text-center space-y-6 py-8">
           {/* Trophy Icon */}
           <div className="flex justify-center">
@@ -36,7 +36,7 @@ export function WinnerOverlay() {
 
           {/* Winner Title */}
           <div>
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 bg-clip-text text-transparent mb-2">
+            <h1 className="text-4xl font-bold mb-2 winner-announcement">
               🎉 ПОБЕДИТЕЛЬ! 🎉
             </h1>
             <p className="text-gray-300">
@@ -47,8 +47,8 @@ export function WinnerOverlay() {
           {/* Winner Card */}
           <div className="flex justify-center">
             <div className="relative group">
-              <div className="absolute -inset-1 bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 rounded-2xl blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-pulse"></div>
-              <div className="relative bg-gray-800 rounded-xl p-6 max-w-sm border border-gray-600">
+              <div className="absolute -inset-1 bg-gradient-to-r from-green-400 via-green-500 to-green-600 rounded-2xl blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-pulse"></div>
+              <div className="relative bg-panel-bg-color rounded-xl p-6 max-w-sm border border-winner-color">
                 <div className="aspect-[3/4] rounded-lg overflow-hidden mb-4">
                   <img
                     src={getImageUrl(winner.imageUrl)}
@@ -68,7 +68,7 @@ export function WinnerOverlay() {
                     </span>
                   </div>
                   
-                  <div className="text-sm text-gray-400">
+                  <div className="text-sm text-muted-foreground">
                     {winner.category === 'games' ? 'Игра' : 'Фильм/сериал'}
                   </div>
                 </div>
@@ -80,7 +80,7 @@ export function WinnerOverlay() {
           <Button
             onClick={handleClose}
             size="lg"
-            className="bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-black font-bold px-8"
+            className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-black font-bold px-8"
           >
             Продолжить
           </Button>

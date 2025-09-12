@@ -103,7 +103,7 @@ export function LibraryGrid() {
               placeholder="Поиск по названию..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-9"
+              className="pl-9 form-input"
             />
           </div>
           
@@ -159,21 +159,21 @@ export function LibraryGrid() {
 
         {/* Items Grid */}
         {items.length > 0 && (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
             {items.map((item) => (
               <div
                 key={item.id}
                 className="group cursor-pointer"
                 onClick={() => handleItemClick(item)}
               >
-                <div className="aspect-[3/4] relative overflow-hidden rounded-lg border border-gray-600 bg-gray-800 transition-all group-hover:scale-105 group-hover:shadow-lg">
+                <div className="aspect-[3/4] relative overflow-hidden rounded-lg border border-color bg-panel-bg-color transition-all group-hover:scale-105 group-hover:shadow-lg group-hover:border-accent-purple">
                   <img
                     src={getImageUrl(item.imageUrl)}
                     alt={item.title}
                     className="w-full h-full object-cover"
                     loading="lazy"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                   <div className="absolute bottom-0 left-0 right-0 p-3 text-white transform translate-y-full group-hover:translate-y-0 transition-transform">
                     <h4 className="font-medium text-sm line-clamp-2">{item.title}</h4>
                   </div>

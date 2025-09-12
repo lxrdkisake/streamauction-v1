@@ -1,6 +1,7 @@
+/* Карточки в стиле скриншота */
 .cardContainer {
-  width: 160px;
-  height: 225px;
+  width: var(--card-width, 160px);
+  height: var(--card-height, 225px);
   position: relative;
   cursor: pointer;
   transition: transform 0.2s ease;
@@ -27,18 +28,24 @@
   border-radius: 12px;
   overflow: hidden;
   backface-visibility: hidden;
-  border: 1px solid rgba(83, 52, 131, 0.5);
+  border: 1px solid #3A3A3D;
 }
 
 .cardFaceBack {
-  background: linear-gradient(135deg, rgba(22, 33, 62, 0.9), rgba(15, 52, 96, 0.9));
+  background: linear-gradient(135deg, #2a2a2e, #1F1F23);
   display: grid;
   place-items: center;
   font-size: 4rem;
   font-weight: 700;
   color: #9146FF;
-  text-shadow: 0 0 20px rgba(145, 70, 255, 0.8);
+  text-shadow: 0 0 15px rgba(145, 70, 255, 0.5);
   backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.cardContainer.clickable:hover .cardFaceBack {
+  border-color: #9146FF;
+  box-shadow: 0 0 20px rgba(145, 70, 255, 0.3);
 }
 
 .cardFaceFront {
@@ -48,6 +55,7 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
+  background-color: #18181B;
 }
 
 .cardFaceFront::after {
@@ -79,4 +87,9 @@
   font-weight: 800;
   color: #00DB84;
   font-size: 0.875rem;
+}
+
+.cardContainer.eliminated {
+  opacity: 0.4;
+  pointer-events: none;
 }
