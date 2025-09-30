@@ -1,0 +1,95 @@
+/* Карточки в стиле скриншота */
+.cardContainer {
+  width: var(--card-width, 160px);
+  height: var(--card-height, 225px);
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.cardContainer:hover {
+  transform: scale(1.05);
+}
+
+.cardInner {
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.cardContainer.flipped .cardInner {
+  transform: rotateY(180deg);
+}
+
+.cardFace {
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  backface-visibility: hidden;
+  border: 1px solid #3A3A3D;
+}
+
+.cardFaceBack {
+  background: linear-gradient(135deg, #2a2a2e, #1F1F23);
+  display: grid;
+  place-items: center;
+  font-size: 4rem;
+  font-weight: 700;
+  color: #9146FF;
+  text-shadow: 0 0 15px rgba(145, 70, 255, 0.5);
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.cardContainer.clickable:hover .cardFaceBack {
+  border-color: #9146FF;
+  box-shadow: 0 0 20px rgba(145, 70, 255, 0.3);
+}
+
+.cardFaceFront {
+  transform: rotateY(180deg);
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  background-color: #18181B;
+}
+
+.cardFaceFront::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 70%;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 20%, transparent 100%);
+}
+
+.cardInfo {
+  position: relative;
+  z-index: 2;
+  padding: 12px;
+}
+
+.cardTitle {
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0 1px 4px #000;
+  font-size: 0.875rem;
+  line-height: 1.2;
+  margin-bottom: 4px;
+}
+
+.cardDonation {
+  font-weight: 800;
+  color: #00DB84;
+  font-size: 0.875rem;
+}
+
+.cardContainer.eliminated {
+  opacity: 0.4;
+  pointer-events: none;
+}
