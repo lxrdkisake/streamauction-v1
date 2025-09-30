@@ -1,152 +1,234 @@
 'use client'
 
-import { useEffect } from 'react'
-import useAuctionStore from '@/store/auction'
-import { AuctionParamsPanel } from '@/components/auction/AuctionParamsPanel'
-import { LibraryGrid } from '@/components/library/LibraryGrid'
-import { SidebarList } from '@/components/auction/SidebarList'
-import { CardsMode } from '@/components/auction/CardsMode'
-import { RouletteMode } from '@/components/auction/RouletteMode'
-import { AddDonationModal } from '@/components/common/AddDonationModal'
-import { WinnerOverlay } from '@/components/common/WinnerOverlay'
-import { Button } from '@/components/ui/button'
-import { Play, Square } from 'lucide-react'
+import { useState, useEffect } from 'react'
 
 export default function HomePage() {
-  const { 
-    lots, 
-    mode, 
-    ui,
-    start,
-    stop,
-    resetAll
-  } = useAuctionStore()
-
-  const lotsList = Object.values(lots)
-  const isAuctionRunning = ui.winner !== null || ui.showWinner
-  const canStartAuction = lotsList.length >= 2 && !isAuctionRunning
-
-  // Auto-restore timer state
-  useEffect(() => {
-    const { timer, setTimer, startTimer } = useAuctionStore.getState()
-    
-    if (timer.running && timer.endsAt) {
-      const now = Date.now()
-      const leftMs = Math.max(0, timer.endsAt - now)
-      
-      if (leftMs > 0) {
-        const totalSeconds = Math.ceil(leftMs / 1000)
-        const hours = Math.floor(totalSeconds / 3600)
-        const minutes = Math.floor((totalSeconds % 3600) / 60)
-        const seconds = totalSeconds % 60
-        
-        setTimer(hours, minutes, seconds)
-        startTimer()
-      }
-    }
-  }, [])
-
-  // Auto-tick timer
-  useEffect(() => {
-    const { timer, tick } = useAuctionStore.getState()
-    
-    if (!timer.running) return
-    
-    const interval = setInterval(() => {
-      tick()
-    }, 100)
-    
-    return () => clearInterval(interval)
-  }, [])
-
-  const handleStartAuction = () => {
-    if (canStartAuction) {
-      start(mode)
-    }
-  }
-
-  const handleStopAuction = () => {
-    stop()
-  }
+  const [contentType, setContentType] = useState('games')
+  const [searchQuery, setSearchQuery] = useState('')
+  const [searchResults, setSearchResults] = useState([])
+  const [isSearching, setIsSearching] = useState(false)
+  const [items, setItems] = useState([])
+  const [timerDisplay, setTimerDisplay] = useState('00:00:00')
+  const [isTimerRunning, setIsTimerRunning] = useState(false)
+  const [auctionMode, setAuctionMode] = useState('cards')
+  const [auctionSubMode, setAuctionSubMode] = useState('instant')
 
   return (
-    <div className="min-h-screen">
-      <div className="container-custom py-6">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-[calc(100vh-6rem)]">
-          {/* Left Sidebar - Timer & Settings */}
-          <div className="lg:col-span-3 space-y-6">
-            <AuctionParamsPanel />
-          </div>
-
-          {/* Main Content */}
-          <div className="lg:col-span-6 space-y-6">
-            {!isAuctionRunning ? (
-              <>
-                {/* Library */}
-                <LibraryGrid />
-                
-                {/* Start Auction Button */}
-                <div className="flex items-center justify-center gap-4">
-                  <Button
-                    onClick={handleStartAuction}
-                    disabled={!canStartAuction}
-                    size="lg"
-                    className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800"
-                  >
-                    <Play className="w-5 h-5 mr-2" />
-                    Начать аукцион
-                  </Button>
-                  
-                  {lotsList.length > 0 && (
-                    <Button
-                      variant="outline"
-                      onClick={resetAll}
-                      size="lg"
-                    >
-                      Сбросить всё
-                    </Button>
-                  )}
-                </div>
-                
-                {/* Minimum lots warning */}
-                {lotsList.length > 0 && lotsList.length < 2 && (
-                  <div className="text-center text-yellow-400 text-sm">
-                    Добавьте минимум 2 лота для начала аукциона
-                  </div>
-                )}
-              </>
-            ) : (
-              <>
-                {/* Auction Mode Display */}
-                {mode === 'cards' ? <CardsMode /> : <RouletteMode />}
-                
-                {/* Stop Auction Button */}
-                <div className="flex items-center justify-center">
-                  <Button
-                    onClick={handleStopAuction}
-                    variant="destructive"
-                    size="lg"
-                  >
-                    <Square className="w-5 h-5 mr-2" />
-                    Остановить аукцион
-                  </Button>
-                </div>
-              </>
-            )}
-          </div>
-
-          {/* Right Sidebar - Lots List */}
-          <div className="lg:col-span-3">
-            <div className="sticky top-6 h-[calc(100vh-6rem)]">
-              <SidebarList />
+    <>
+      {/* Header */}
+      <header className="header">
+        <div className="container">
+          <div className="header-container">
+            <a href="#" className="logo">StreamAuction</a>
+            
+            <div className="content-type-selector">
+              <button 
+                className={`content-type-btn ${contentType === 'games' ? 'active' : ''}`}
+                onClick={() => setContentType('games')}
+              >
+                🎮 Игры
+              </button>
+              <button 
+                className={`content-type-btn ${contentType === 'movies' ? 'active' : ''}`}
+                onClick={() => setContentType('movies')}
+              >
+                🎬 Фильмы и сериалы
+              </button>
+            </div>
+            
+            <div className="user-profile">
+              <span>Стример</span>
             </div>
           </div>
         </div>
-      </div>
+      </header>
 
-      {/* Modals */}
-      <AddDonationModal />
-      <WinnerOverlay />
-    </div>
+      {/* Main Content */}
+      <main className="container">
+        <div className="dashboard-layout">
+          {/* Left Sidebar */}
+          <div className="dashboard-left">
+            <div className="sidebar-sticky-content">
+              {/* Timer */}
+              <div className="sidebar-module">
+                <div className="timer-header">
+                  <div className="settings-title">Таймер</div>
+                  <button className="set-time-btn">Set</button>
+                </div>
+                <div className="timer-display">{timerDisplay}</div>
+                <div className="timer-controls">
+                  <button className="timer-btn" id="timer-start-pause">
+              {/* Auction Settings */}
+              <div className="sidebar-module">
+                <div className="settings-title">Настройки аукциона</div>
+                
+                <div className="control-section">
+                  <div className="settings-title">Режим показа</div>
+                  <div className="segmented">
+                    <button 
+                      className={`segmented__btn ${auctionMode === 'cards' ? 'is-active' : ''}`}
+                      onClick={() => setAuctionMode('cards')}
+                    >
+                      🃏 Карточки
+                    </button>
+                    <button 
+                      className={`segmented__btn ${auctionMode === 'roulette' ? 'is-active' : ''}`}
+                      onClick={() => setAuctionMode('roulette')}
+                    >
+                      🎰 Рулетка
+                    </button>
+                    <div className="segmented__indicator"></div>
+                  </div>
+                </div>
+                    <span className="play-icon">▶</span>
+                <div className="control-section">
+                  <div className="settings-title">Подрежим</div>
+                  <div className="segmented">
+                    <button 
+                      className={`segmented__btn ${auctionSubMode === 'instant' ? 'is-active' : ''}`}
+                      onClick={() => setAuctionSubMode('instant')}
+                    >
+                      Моментальный
+                    </button>
+                    <button 
+                      className={`segmented__btn ${auctionSubMode === 'elimination' ? 'is-active' : ''}`}
+                      onClick={() => setAuctionSubMode('elimination')}
+                    >
+                      На выбывание
+                    </button>
+                    <div className="segmented__indicator"></div>
+                  </div>
+                </div>
+                    <span className="pause-icon">⏸</span>
+                <hr className="section-divider" />
+                
+                <button className="btn-launch btn--lg w-100" disabled={items.length < 2}>
+                  Начать аукцион
+                </button>
+                
+                <button className="btn-ghost w-100" style={{marginTop: '8px'}}>
+                  Сбросить всё
+                </button>
+              </div>
+            </div>
+          </div>
+                  </button>
+          {/* Main Area */}
+          <div className="dashboard-main">
+            {/* Search Panel */}
+            <div className="panel-module top-control-bar">
+              <div className="add-item-form">
+                <div className="search-field-wrapper">
+                  <input
+                    type="text"
+                    className="form-input"
+                    placeholder="Поиск по названию..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                  {isSearching && (
+                    <div className="search-results-dropdown visible">
+                      <div className="search-loading">Поиск...</div>
+                    </div>
+                  )}
+                </div>
+                <input type="number" className="form-input" placeholder="Сумма" min="1" />
+                <button className="btn-launch">Добавить</button>
+                <button className="btn-danger">Очистить</button>
+              </div>
+            </div>
+                  <button className="timer-btn">⏹</button>
+            {/* Auction Area */}
+            <div className="auction-area">
+              <div className="auction-info-header">
+                <div className="auction-status">Начните поиск</div>
+                <div id="sub-status-display">Введите название для поиска в библиотеке</div>
+              </div>
+              
+              <div className="cards-field-wrapper">
+                <div className="cards-field">
+                  {/* Cards will be rendered here */}
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    height: '300px',
+                    color: 'var(--text-muted-color)',
+                    fontSize: '1.2rem'
+                  }}>
+                    🔍 Найдите контент для добавления в аукцион
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+                </div>
+          {/* Right Sidebar */}
+          <div className="dashboard-right">
+            <div className="gsb-panel">
+              <div className="gsb-header">
+                <div className="gsb-header-row">
+                  <h3 className="gsb-title">
+                    📋 Список лотов
+                    <span className="gsb-badge">{items.length}</span>
+                  </h3>
+                  <button className="gsb-clear" title="Очистить список">
+                    🗑️
+                  </button>
+                </div>
+                
+                <div className="gsb-search">
+                  <div className="gsb-search-wrap">
+                    <input
+                      type="text"
+                      className="gsb-input"
+                      placeholder="Поиск по названию..."
+                    />
+                    <button className="gsb-input-clear">×</button>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="gsb-scroll">
+                <ul className="gsb-list">
+                  {items.length === 0 ? (
+                    <li style={{
+                      gridColumn: '1 / -1',
+                      textAlign: 'center',
+                      padding: '2rem 1rem',
+                      color: 'var(--text-muted-color)'
+                    }}>
+                      📝 Список пуст<br />
+                      <small>Добавьте лоты из библиотеки</small>
+                    </li>
+                  ) : (
+                    items.map((item, index) => (
+                      <li key={index}>
+                        <img src="/placeholder.png" alt="" className="gsb-thumb" />
+                        <span className="gsb-name">Пример лота</span>
+                        <div className="gsb-sum">
+                          <span className="gsb-amount">100 ₽</span>
+                        </div>
+                        <div className="gsb-actions">
+                          <button className="gsb-ico">✏️</button>
+                          <button className="gsb-ico" data-danger>🗑️</button>
+                        </div>
+                      </li>
+                    ))
+                  )}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+              </div>
+      {/* Footer */}
+      <footer className="footer footer--fixed">
+        <div className="container">
+          Made with ❤️ for streamers
+        </div>
+      </footer>
+    </>
   )
 }
