@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuctionStore } from '@/store/auction';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader2, Play, Pause } from 'lucide-react';
+import { Loader as Loader2, Play, Pause } from 'lucide-react';
 
 export default function RouletteMode() {
   const { 
