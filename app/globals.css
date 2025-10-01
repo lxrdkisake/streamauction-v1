@@ -2,6 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Фоновые стили из style.css */
+:root {
+  --bg-base-color: #0E0E10;
+  --bg-surface-color: #141419;
+  --bg-surface2-color: #1A1A20;
+}
+
 /* Минимальные базовые стили для совместимости с Tailwind */
 @layer base {
   * { 
@@ -12,6 +19,7 @@
     height: 100%; 
     margin: 0;
     padding: 0;
+    background-color: var(--bg-base-color);
   }
 
   body {
@@ -25,5 +33,13 @@
     max-width: 1400px;
     margin: 0 auto;
     padding: 0 1rem;
+  }
+  
+  .bg-surface {
+    background-color: var(--bg-surface-color);
+  }
+  
+  .bg-surface2 {
+    background-color: var(--bg-surface2-color);
   }
 }
