@@ -2,9 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Базовые стили уже в style.css, здесь только Tailwind */
+/* Минимальные базовые стили для совместимости с Tailwind */
 @layer base {
-  * { @apply border-border; }
+  * { 
+    @apply border-border; 
+  }
   
   html, body { 
     height: 100%; 
@@ -17,7 +19,8 @@
   }
 }
 
-@layer components {
+/* Утилиты для совместимости с новым CSS */
+@layer utilities {
   .container-custom {
     max-width: 1400px;
     margin: 0 auto;
