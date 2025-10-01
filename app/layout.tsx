@@ -21,7 +21,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           rel="stylesheet"
         />
       </head>
-      <body className="min-h-dvh font-sans antialiased" style={{ fontFamily: 'Inter, sans-serif' }}>
+      <body className="min-h-screen font-sans antialiased" style={{ fontFamily: 'Inter, sans-serif' }}>
         <div className="min-h-screen bg-background">
           <AppHeader />
           <main className="flex-1">
