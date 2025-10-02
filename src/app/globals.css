@@ -1,26 +1,74 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg-base-color: #0E0E10;
+  --bg-surface-color: #141419;
+  --bg-surface2-color: #1A1A20;
+  --text-color: #F5F6F8;
+  
+  --background: 14 14 16;
+  --foreground: 245 246 248;
+  --card: 20 20 25;
+  --card-foreground: 245 246 248;
+  --popover: 20 20 25;
+  --popover-foreground: 245 246 248;
+  --primary: 139 69 19;
+  --primary-foreground: 245 246 248;
+  --secondary: 26 26 32;
+  --secondary-foreground: 245 246 248;
+  --muted: 26 26 32;
+  --muted-foreground: 161 161 170;
+  --accent: 26 26 32;
+  --accent-foreground: 245 246 248;
+  --destructive: 239 68 68;
+  --destructive-foreground: 245 246 248;
+  --border: 39 39 42;
+  --input: 39 39 42;
+  --ring: 139 69 19;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-background text-foreground;
+    background-color: var(--bg-base-color);
+    color: var(--text-color);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer utilities {
+  .container-custom {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+  
+  .bg-surface {
+    background-color: var(--bg-surface-color);
+  }
+  
+  .bg-surface2 {
+    background-color: var(--bg-surface2-color);
+  }
+  
+  .empty-state {
+    @apply flex flex-col items-center justify-center py-12 text-center;
+  }
+  
+  .empty-state-icon {
+    @apply w-12 h-12 text-muted-foreground mb-4;
+  }
+  
+  .empty-state-title {
+    @apply text-lg font-semibold mb-2;
+  }
+  
+  .empty-state-description {
+    @apply text-sm text-muted-foreground max-w-sm;
+  }
 }
