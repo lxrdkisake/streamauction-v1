@@ -4,7 +4,7 @@ import { useEffect } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Play, Settings, Zap, Grid, Clock } from 'lucide-react'
+import { Play, Settings, Zap, Grid2x2 as Grid, Clock } from 'lucide-react'
 import useAuctionStore from '@/store/auction'
 
 export default function HomePage() {
