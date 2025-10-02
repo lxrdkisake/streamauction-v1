@@ -139,5 +139,3 @@ export function RouletteMode() {
     </div>
   )
 }
-
-export { RouletteMode }
