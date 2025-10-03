@@ -31,12 +31,12 @@ export default function HomePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
       <div className="container-custom py-8">
         {/* Header */}
         <div className="text-center mb-12">
           <div className="flex items-center justify-center gap-3 mb-4">
-            <div className="w-12 h-12 bg-purple-600 rounded-xl flex items-center justify-center">
+            <div className="w-12 h-12 bg-orange-600 rounded-xl flex items-center justify-center">
               <Zap className="w-7 h-7 text-white" />
             </div>
             <h1 className="text-4xl font-bold text-white">StreamAuction</h1>
@@ -102,9 +102,9 @@ export default function HomePage() {
                 </div>
 
                 <div className="mt-6 flex justify-center">
-                  <Button 
+                  <Button
                     size="lg"
-                    className="bg-purple-600 hover:bg-purple-700"
+                    className="bg-orange-600 hover:bg-orange-700"
                   >
                     <Settings className="w-5 h-5 mr-2" />
                     Управлять аукционом
@@ -123,8 +123,8 @@ export default function HomePage() {
               </CardHeader>
               <CardContent className="text-center">
                 <div className="mb-8">
-                  <div className="w-24 h-24 bg-purple-600/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Play className="w-12 h-12 text-purple-400" />
+                  <div className="w-24 h-24 bg-orange-600/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Play className="w-12 h-12 text-orange-400" />
                   </div>
                   <p className="text-gray-300 max-w-md mx-auto">
                     Создайте аукцион, добавьте лоты из библиотеки игр и фильмов, 
@@ -132,11 +132,11 @@ export default function HomePage() {
                   </p>
                 </div>
 
-                <Button 
+                <Button
                   size="lg"
                   onClick={handleCreateAuction}
                   disabled={isUpdating}
-                  className="bg-purple-600 hover:bg-purple-700 px-8"
+                  className="bg-orange-600 hover:bg-orange-700 px-8"
                 >
                   <Play className="w-5 h-5 mr-2" />
                   {isUpdating ? 'Создание...' : 'Создать аукцион'}
@@ -159,7 +159,7 @@ export default function HomePage() {
 
             <Card className="bg-gray-800/30 border-gray-700">
               <CardContent className="p-6 text-center">
-                <Zap className="w-8 h-8 text-purple-400 mx-auto mb-3" />
+                <Zap className="w-8 h-8 text-orange-400 mx-auto mb-3" />
                 <h3 className="font-semibold text-white mb-2">Режим рулетки</h3>
                 <p className="text-sm text-gray-400">
                   Динамичная рулетка для выбора победителя
