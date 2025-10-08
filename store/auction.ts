@@ -53,6 +53,7 @@ export type UIState = {
   winner: LotId | null
   addingLot: Lot | null
   showWinner: boolean
+  isStarted: boolean
 }
 
 export type AuctionState = {
@@ -172,7 +173,8 @@ const useAuctionStore = create<AuctionState>()(
       ui: {
         winner: null,
         addingLot: null,
-        showWinner: false
+        showWinner: false,
+        isStarted: false
       },
       searchQuery: '',
       
@@ -231,7 +233,7 @@ const useAuctionStore = create<AuctionState>()(
         set({
           lots: {},
           order: [],
-          ui: { winner: null, addingLot: null, showWinner: false }
+          ui: { winner: null, addingLot: null, showWinner: false, isStarted: false }
         })
       },
 
@@ -256,14 +258,14 @@ const useAuctionStore = create<AuctionState>()(
             mode,
             order: shuffledOrder,
             lots: resetLots,
-            ui: { ...state.ui, winner: null, showWinner: false }
+            ui: { ...state.ui, winner: null, showWinner: false, isStarted: true }
           }
         })
       },
 
       stop: () => {
         set((state) => ({
-          ui: { ...state.ui, winner: null, showWinner: false }
+          ui: { ...state.ui, winner: null, showWinner: false, isStarted: false }
         }))
       },
 
@@ -583,7 +585,8 @@ const useAuctionStore = create<AuctionState>()(
           ui: {
             winner: null,
             addingLot: null,
-            showWinner: false
+            showWinner: false,
+            isStarted: false
           },
           searchQuery: '',
           currentAuction: null,

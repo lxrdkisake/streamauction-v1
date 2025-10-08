@@ -5,7 +5,7 @@ import { AuctionControlPanel } from '@/components/auction/AuctionControlPanel'
 import { LotsListSection } from '@/components/auction/LotsListSection'
 import LibrarySection from '@/components/library/LibrarySection'
 import { CardsMode } from '@/components/auction/CardsMode'
-import { RouletteMode } from '@/components/auction/RouletteMode'
+import RouletteMode from '@/components/auction/RouletteMode'
 import { WinnerOverlay } from '@/components/common/WinnerOverlay'
 import useAuctionStore from '@/store/auction'
 

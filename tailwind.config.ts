@@ -17,12 +17,7 @@ module.exports = {
         card:{ DEFAULT:'hsl(var(--card))', foreground:'hsl(var(--card-foreground))' },
         base:'#0E0E10', surface:'#141419', surface2:'#1A1A20', text:'#F5F6F8'
       },
-      backgroundImage: {
-        'dots': "radial-gradient(circle at 1px 1px, rgba(255,255,255,0.05) 1px, transparent 0)",
-      },
-      backgroundSize: {
-        'dots': '30px 30px',
-      },
+
       borderRadius:{ lg:'var(--radius)', xl:'12px', '2xl':'16px' },
     },
   },

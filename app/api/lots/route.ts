@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma, handleDbError } from '@/lib/db'
 import { CreateLotSchema } from '@/lib/validators'
+import { Lot } from '@prisma/client'
 
 export async function GET(request: NextRequest) {
   try {
@@ -12,14 +13,14 @@ export async function GET(request: NextRequest) {
     const offset = (page - 1) * limit
 
     const where: any = {}
-    
+
     if (search) {
       where.OR = [
         { title: { contains: search, mode: 'insensitive' } },
         { description: { contains: search, mode: 'insensitive' } }
       ]
     }
-    
+
     if (category && (category === 'games' || category === 'movies')) {
       where.category = category
     }
@@ -34,7 +35,8 @@ export async function GET(request: NextRequest) {
       prisma.lot.count({ where })
     ])
 
-    const parsedLots = lots.map(lot => ({
+    // Явно указываем тип для 'lot'
+    const parsedLots = lots.map((lot: Lot) => ({
       ...lot,
       meta: lot.meta ? JSON.parse(lot.meta) : null
     }))
@@ -54,8 +56,8 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('GET /api/lots error:', error)
     return NextResponse.json(
-      { success: false, error: 'Ошибка получения лотов' },
-      { status: 500 }
+        { success: false, error: 'Ошибка получения лотов' },
+        { status: 500 }
     )
   }
 }
@@ -64,7 +66,7 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
     const validatedData = CreateLotSchema.parse(body)
-    
+
     const lot = await prisma.lot.create({
       data: {
         ...validatedData,
@@ -84,22 +86,22 @@ export async function POST(request: NextRequest) {
     })
   } catch (error: any) {
     console.error('POST /api/lots error:', error)
-    
+
     if (error.name === 'ZodError') {
       return NextResponse.json(
-        { 
-          success: false, 
-          error: 'Неверные данные',
-          details: error.errors
-        },
-        { status: 400 }
+          {
+            success: false,
+            error: 'Неверные данные',
+            details: error.errors
+          },
+          { status: 400 }
       )
     }
-    
+
     const dbError = handleDbError(error)
     return NextResponse.json(
-      { success: false, error: dbError.message },
-      { status: 500 }
+        { success: false, error: dbError.message },
+        { status: 500 }
     )
   }
 }

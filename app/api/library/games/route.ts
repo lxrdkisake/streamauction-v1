@@ -3,6 +3,10 @@ type Item = { id:string; title:string; imageUrl:string|null; category:'games' }
 
 export async function GET(req:Request){
   try{
+    // --- НАЧАЛО ИЗМЕНЕНИЙ ДЛЯ ДИАГНОСТИКИ ---
+    console.log('API-ключ из process.env:', process.env.RAWG_API_KEY);
+    // --- КОНЕЦ ИЗМЕНЕНИЙ ДЛЯ ДИАГНОСТИКИ ---
+
     const q = new URL(req.url).searchParams.get('q')?.trim() || ''
     const key = process.env.RAWG_API_KEY || ''
     if(!q) return NextResponse.json({ ok:true, items:[] as Item[] })

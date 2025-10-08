@@ -17,8 +17,8 @@ export async function GET(req:Request){
 
     const [m,t]=await Promise.all([rm.json(),rt.json()])
     const items: Item[] = [
-      ...((m?.results??[]) as any[]).map(x=>({ id:`m-${x.id}`, title:String(x.title||x.original_title||'').trim(), imageUrl:img(x.poster_path), category:'movies' })),
-      ...((t?.results??[]) as any[]).map(x=>({ id:`t-${x.id}`, title:String(x.name||x.original_name||'').trim(), imageUrl:img(x.poster_path), category:'movies' })),
+      ...((m?.results??[]) as any[]).map(x=>({ id:`m-${x.id}`, title:String(x.title||x.original_title||'').trim(), imageUrl:img(x.poster_path), category:'movies' as const })),
+      ...((t?.results??[]) as any[]).map(x=>({ id:`t-${x.id}`, title:String(x.name||x.original_name||'').trim(), imageUrl:img(x.poster_path), category:'movies' as const })),
     ].slice(0,20)
     return NextResponse.json({ ok:true, items })
   }catch(e){

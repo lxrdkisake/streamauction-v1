@@ -2,61 +2,42 @@
 @tailwind components;
 @tailwind utilities;
 
-/* --- ROOT VARIABLES (NEO-TWITCH THEME) --- */
 :root {
-  --bg-color: #18181B;
-  --panel-bg-color: #1F1F23;
+  /* Vibrant Neo-Dark Palette (Based on your V1 design) */
+  --bg-color: #0E0E10;
+  --panel-bg-color: #18181B;
   --accent-purple: #9146FF;
-  --accent-pink: #F92C86;
-  --text-color: #EFEFF1;
-  --text-muted-color: #ADADB8;
-  --border-color: #3A3A3D;
+  --accent-pink: #9146FF;
+  --text-color: #efeff1;
+  --text-muted-color: #adadb8;
+  --border-color: #3a3a3d;
   --winner-color: #00DB84;
   --danger-color: #F44336;
   --font-family: 'Inter', sans-serif;
-  --border-radius: 12px;
+  --border-radius: 8px;
   --card-width: 160px;
   --card-height: 225px;
   --header-height: 65px;
 
-  /* Tailwind overrides */
-  --background: 220 26% 14%;
-  --foreground: 210 40% 98%;
-  --card: 220 26% 18%;
-  --card-foreground: 210 40% 98%;
-  --primary: 269 83% 53%;
-  --primary-foreground: 210 40% 98%;
-  --secondary: 220 26% 22%;
-  --secondary-foreground: 210 40% 98%;
-  --muted: 220 26% 25%;
-  --muted-foreground: 215 20.2% 65.1%;
-  --accent: 220 26% 22%;
-  --accent-foreground: 210 40% 98%;
-  --border: 220 26% 30%;
-  --input: 220 26% 18%;
-  --ring: 269 83% 53%;
-  --radius: 0.75rem;
-}
-
-*, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-html {
-  scroll-behavior: smooth;
-  height: 100%;
-}
-
-body {
-  font-family: var(--font-family);
-  background-color: var(--bg-color);
-  color: var(--text-color);
-  line-height: 1.6;
-  background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.05) 1px, transparent 0);
-  background-size: 30px 30px;
-  height: 100%;
+  /* Tailwind overrides using the new palette */
+  --background: 240 6% 7%;
+  --foreground: 240 5% 96%;
+  --card: 240 6% 10%;
+  --card-foreground: 240 5% 96%;
+  --primary: 266 100% 65%;
+  --primary-foreground: 240 5% 96%;
+  --secondary: 240 4% 23%;
+  --secondary-foreground: 240 5% 96%;
+  --muted: 240 4% 23%;
+  --muted-foreground: 240 4% 67%;
+  --accent: 240 4% 23%;
+  --accent-foreground: 240 5% 96%;
+  --destructive: 4 90% 58%;
+  --destructive-foreground: 240 5% 96%;
+  --border: 240 4% 23%;
+  --input: 240 6% 10%;
+  --ring: 266 100% 65%;
+  --radius: 0.5rem;
 }
 
 @layer base {
@@ -65,37 +46,46 @@ body {
   html, body { height: 100%; }
 
   body {
-    @apply font-sans;
+    font-family: var(--font-family);
+    background-color: var(--bg-color);
     color: var(--text-color);
-
-    background-color: #18181B;
+    line-height: 1.6;
     background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.05) 1px, transparent 0);
     background-size: 30px 30px;
   }
 
   ::-webkit-scrollbar { width: 8px; height: 8px; }
   ::-webkit-scrollbar-track {
-    background: #16161a;
-    border-left: 1px solid rgba(255,255,255,.06);
+    background: var(--bg-color);
   }
   ::-webkit-scrollbar-thumb {
-    background: linear-gradient(180deg, #9146ff, #ff0077);
+    background: var(--border-color);
     border-radius: 10px;
-    border: 3px solid #16161a;
-    box-shadow: 0 0 6px rgba(145, 70, 255, 0.6);
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(180deg, #a75bff, #ff3399);
-    box-shadow: 0 0 8px rgba(255, 0, 119, 0.8);
+    background: var(--accent-purple);
   }
 }
 
 @layer components {
+  /* Здесь остаются все ваши .card-like, .mode-selector-bg и другие классы... */
   .card-like {
     background: var(--panel-bg-color);
     border: 1px solid var(--border-color);
     border-radius: var(--border-radius);
     backdrop-filter: blur(10px);
+  }
+
+  .mode-selector-bg {
+    @apply bg-black/20 p-1 rounded-lg;
+  }
+
+  .mode-selector-trigger {
+    @apply text-gray-400 transition-all duration-200;
+  }
+
+  .mode-selector-trigger[data-state=active] {
+    @apply bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg shadow-purple-600/20;
   }
 
   .input-like {
@@ -106,8 +96,7 @@ body {
   }
 
   .container-custom {
-    max-width: 1400px;
-    margin: 0 auto;
+    width: 100%;
     padding: 0 1rem;
   }
 
@@ -154,6 +143,7 @@ body {
   }
 }
 
+/* Здесь остаются все ваши стили для карточек, кнопок и т.д. ... */
 /* --- КАРТОЧКИ --- */
 .card-container {
   width: var(--card-width);

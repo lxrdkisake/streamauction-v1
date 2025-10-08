@@ -45,7 +45,7 @@ export function LibraryGrid() {
         
         const response = await fetch(url, { cache: 'no-store' })
         const data = await response.json()
-        
+        console.log(data)
         if (aborted) return
         
         if (!response.ok || !data.ok) {
