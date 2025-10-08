@@ -24,10 +24,11 @@ import {
 import { CSS } from '@dnd-kit/utilities'
 import { cn } from '@/lib/utils'
 import useAuctionStore from '@/store/auction'
-import type { AuctionLot, Lot } from '@/lib/validators'
+import type { AuctionLot as ValidatorAuctionLot, Lot } from '@/lib/validators'
+import type { AuctionLot } from '@/store/auction'
 
 interface SortableLotItemProps {
-  auctionLot: AuctionLot & { lot: Lot }
+  auctionLot: AuctionLot
   isSelected: boolean
   onSelect: (checked: boolean) => void
   onRemove: () => void

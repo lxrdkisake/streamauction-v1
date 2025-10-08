@@ -14,7 +14,7 @@ import {
   Timer
 } from 'lucide-react'
 import useAuctionStore, { useTimerState } from '@/store/auction'
-import { getStatusLabel, getStatusVariant } from '@/lib/fsm/auction'
+import { getStatusLabel, getStatusVariant, type AuctionStatus } from '@/lib/fsm/auction'
 
 export function AppHeader() {
   const pathname = usePathname()
@@ -108,11 +108,11 @@ export function AppHeader() {
             
             {/* Auction Status */}
             {currentAuction && (
-              <Badge 
-                variant={getStatusVariant(currentAuction.status)}
+              <Badge
+                variant={getStatusVariant(currentAuction.status as AuctionStatus)}
                 className="font-medium"
               >
-                {getStatusLabel(currentAuction.status)}
+                {getStatusLabel(currentAuction.status as AuctionStatus)}
               </Badge>
             )}
             

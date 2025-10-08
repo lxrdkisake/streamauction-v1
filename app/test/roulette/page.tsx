@@ -47,9 +47,9 @@ export default function TestRoulettePage() {
   const rouletteRef = useRef<HTMLDivElement>(null)
 
   // Create roulette items with weights
-  const rouletteItems = []
+  const rouletteItems: typeof testLots = []
   testLots.forEach(lot => {
-    const weight = Math.ceil(lot.sum / 50) // Simple weight calculation
+    const weight = Math.ceil(lot.sum / 50)
     for (let i = 0; i < weight; i++) {
       rouletteItems.push(lot)
     }

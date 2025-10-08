@@ -49,10 +49,10 @@ export default function TestCardsPage() {
 
   const handleCardClick = (lotId: string) => {
     if (isAnimating || flippedCards.has(lotId)) return
-    
+
     setIsAnimating(true)
-    setFlippedCards(prev => new Set([...prev, lotId]))
-    
+    setFlippedCards(prev => new Set(Array.from(prev).concat(lotId)))
+
     setTimeout(() => {
       setIsAnimating(false)
     }, 500)

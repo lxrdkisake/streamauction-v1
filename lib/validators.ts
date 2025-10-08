@@ -130,6 +130,7 @@ export type Lot = z.infer<typeof LotSchema>
 export type CreateLot = z.infer<typeof CreateLotSchema>
 export type UpdateLot = z.infer<typeof UpdateLotSchema>
 export type Auction = z.infer<typeof AuctionSchema>
+export type AuctionStatus = 'idle' | 'configured' | 'running' | 'paused' | 'finished' | 'archived'
 export type AuctionConfig = z.infer<typeof AuctionConfigSchema>
 export type AuctionLot = z.infer<typeof AuctionLotSchema>
 export type AddLotsToAuction = z.infer<typeof AddLotsToAuctionSchema>
