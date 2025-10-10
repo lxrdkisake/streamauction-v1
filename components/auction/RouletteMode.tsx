@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import useAuctionStore from '@/store/auction';
 import WheelRoulette from './WheelRoulette';
 import CaseRoulette from './CaseRoulette';
@@ -17,17 +17,17 @@ export default function RouletteMode() {
   const spinRoulette = useAuctionStore(state => state.spinRoulette);
   const showWinnerScreen = useAuctionStore(state => state.showWinnerScreen);
 
-  const handleSpin = async () => {
+  const handleSpin = useCallback(async () => {
     try {
       await spinRoulette();
     } catch (error) {
       console.error('Failed to spin roulette:', error);
     }
-  };
+  }, [spinRoulette]);
 
-  const handleSpinComplete = (winnerId: string) => {
+  const handleSpinComplete = useCallback((winnerId: string) => {
     showWinnerScreen(true);
-  };
+  }, [showWinnerScreen]);
 
   return (
     <div className="w-full h-full flex flex-col">
