@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Lot } from '@/store/auction';
 import { Trophy } from 'lucide-react';
@@ -15,6 +15,8 @@ interface WheelRouletteProps {
 export default function WheelRoulette({ lots, spinning, winnerId, onSpinComplete }: WheelRouletteProps) {
   const [rotation, setRotation] = useState(0);
   const [currentRotation, setCurrentRotation] = useState(0);
+  const spinningRef = useRef(false);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   const availableLots = lots.filter(lot => !lot.eliminated);
   const segmentAngle = availableLots.length > 0 ? 360 / availableLots.length : 0;
@@ -29,7 +31,9 @@ export default function WheelRoulette({ lots, spinning, winnerId, onSpinComplete
   ];
 
   useEffect(() => {
-    if (spinning && availableLots.length > 0) {
+    if (spinning && !spinningRef.current && availableLots.length > 0) {
+      spinningRef.current = true;
+
       const randomIndex = Math.floor(Math.random() * availableLots.length);
       const targetAngle = randomIndex * segmentAngle;
       const spins = 5;
@@ -37,20 +41,28 @@ export default function WheelRoulette({ lots, spinning, winnerId, onSpinComplete
 
       setRotation(totalRotation);
 
-      setTimeout(() => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+
+      timerRef.current = setTimeout(() => {
         const selectedLot = availableLots[randomIndex];
         if (onSpinComplete && selectedLot) {
           onSpinComplete(selectedLot.id);
         }
+        spinningRef.current = false;
       }, 5000);
-    }
-  }, [spinning]);
-
-  useEffect(() => {
-    if (!spinning) {
+    } else if (!spinning) {
+      spinningRef.current = false;
       setCurrentRotation(rotation % 360);
     }
-  }, [spinning, rotation]);
+
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+    };
+  }, [spinning]);
 
   if (availableLots.length === 0) {
     return (

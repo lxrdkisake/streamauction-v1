@@ -17,21 +17,25 @@ export default function CaseRoulette({ lots, spinning, winnerId, onSpinComplete 
   const [offset, setOffset] = useState(0);
   const [items, setItems] = useState<Lot[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
+  const spinningRef = useRef(false);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   const availableLots = lots.filter(lot => !lot.eliminated);
 
   useEffect(() => {
-    if (availableLots.length > 0) {
+    if (availableLots.length > 0 && items.length === 0) {
       const repeatedItems: Lot[] = [];
       for (let i = 0; i < 50; i++) {
         repeatedItems.push(...availableLots);
       }
       setItems(repeatedItems);
     }
-  }, [lots]);
+  }, [availableLots.length, items.length]);
 
   useEffect(() => {
-    if (spinning && items.length > 0) {
+    if (spinning && !spinningRef.current && items.length > 0 && availableLots.length > 0) {
+      spinningRef.current = true;
+
       const winnerIndex = Math.floor(Math.random() * availableLots.length);
       const winnerLot = availableLots[winnerIndex];
 
@@ -43,12 +47,25 @@ export default function CaseRoulette({ lots, spinning, winnerId, onSpinComplete 
 
       setOffset(targetOffset);
 
-      setTimeout(() => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+
+      timerRef.current = setTimeout(() => {
         if (onSpinComplete && winnerLot) {
           onSpinComplete(winnerLot.id);
         }
+        spinningRef.current = false;
       }, 5000);
+    } else if (!spinning) {
+      spinningRef.current = false;
     }
+
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+    };
   }, [spinning]);
 
   const getRarityColor = (sum: number) => {
